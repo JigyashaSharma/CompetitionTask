@@ -10,6 +10,7 @@ export class IndividualDetailSection extends Component {
             Object.assign({}, props.details)
             : {
                 firstName: "",
+                lastName: "",
                 email: "",
                 phone: ""
             }
@@ -75,6 +76,16 @@ export class IndividualDetailSection extends Component {
                     maxLength={80}
                     placeholder="Enter your first name"
                     errorMessage="Please enter a valid first name"
+                />
+                <ChildSingleInput
+                    inputType="text"
+                    label="Last Name"
+                    name="lastName"
+                    value={this.state.newContact.lastName}
+                    controlFunc={this.handleChange}
+                    maxLength={80}
+                    placeholder="Enter your last name"
+                    errorMessage="Please enter a valid last name"
                 />
                 <ChildSingleInput
                     inputType="text"
