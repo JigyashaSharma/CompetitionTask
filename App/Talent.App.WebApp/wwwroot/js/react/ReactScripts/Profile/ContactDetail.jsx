@@ -118,6 +118,8 @@ export class IndividualDetailSection extends Component {
     renderDisplay() {
 
         let firstName = this.props.details ? `${this.props.details.firstName}` : ""
+        let lastName = this.props.details ? `${this.props.details.lastName}` : ""
+        let fullName = firstName + " " + lastName;
         let email = this.props.details ? this.props.details.email : ""
         let phone = this.props.details ? this.props.details.phone : ""
 
@@ -125,7 +127,7 @@ export class IndividualDetailSection extends Component {
             <div className='row'>
                 <div className="ui sixteen wide column">
                     <React.Fragment>
-                        <p>Name: {firstName}</p>
+                        <p>Name: {fullName}</p>
                         <p>Email: {email}</p>
                         <p>Phone: {phone}</p>
                     </React.Fragment>
