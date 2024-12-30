@@ -22,6 +22,7 @@ export class JobSummary extends React.Component {
                     onChange={this.updateField}
                 >
                 </textarea>
+                {this.props.isError ? <div className="ui basic red pointing prompt label transition visible">{this.props.errorMessage}</div> : null}
             </div>
         )
     }

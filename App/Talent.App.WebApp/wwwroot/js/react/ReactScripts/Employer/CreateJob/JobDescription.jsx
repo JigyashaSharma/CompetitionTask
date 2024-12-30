@@ -36,6 +36,7 @@ export class JobDescription extends React.Component {
                         "change": this.onChange
                     }}
                 />
+                {this.props.isError ? <div className="ui basic red pointing prompt label transition visible">{this.props.errorMessage}</div> : null}
             </section>
         )
     }

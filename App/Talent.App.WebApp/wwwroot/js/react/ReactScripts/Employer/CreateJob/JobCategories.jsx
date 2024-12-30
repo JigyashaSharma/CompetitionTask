@@ -45,6 +45,7 @@ export class JobCategories extends React.Component {
                 onChange={this.handleChange}
                 name="subCategory"
                 value={selectedSubCategory}>
+                <option value="">Please Select</option>
                 {subCatList}
             </select>)
         }
