@@ -96,7 +96,6 @@ export default class ManageJobsFilter extends React.Component {
                             <Accordion.Content active={this.props.activeIndex === 0}>
                              <div onClick={this.toggleFilterDropdown}>
                                 <Dropdown
-                                    className="custom-dropdown"
                                     fluid
                                     multiple
                                     selection
@@ -125,7 +124,6 @@ export default class ManageJobsFilter extends React.Component {
                                 <Accordion.Content active={this.props.activeIndex === 1}>
                                     <div onClick={this.toggleSortDropdown}>
                                       <Dropdown
-                                        className="custom-dropdown"
                                         placeholder='Newest First'
                                         fluid
                                         selection

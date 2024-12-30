@@ -172,24 +172,27 @@ namespace Talent.Services.Listing.Controllers
                 employerId = employerId == null ? _userAppContext.CurrentUserId : employerId;
                 var sortedJobs = (await _jobService.GetEmployerJobsAsync(employerId));
 
-                if (!showActive)
+                //Changing logic here for filters to work properly
+                IEnumerable<Job> filteredSortedJobs = Enumerable.Empty<Job>();
+
+                if (showActive)
                 {
-                    sortedJobs = sortedJobs.Where(x => x.Status != JobStatus.Active);
+                    filteredSortedJobs = sortedJobs.Where(x => x.Status == JobStatus.Active);
                 }
 
-                if(!showClosed)
+                if(showClosed)
                 {
-                    sortedJobs = sortedJobs.Where(x => x.Status != JobStatus.Closed);
+                    filteredSortedJobs = filteredSortedJobs.Concat(sortedJobs.Where(x => x.Status == JobStatus.Closed));
                 }
 
-                if (!showExpired)
+                if (showExpired)
                 {
-                    sortedJobs = sortedJobs.Where(x => x.ExpiryDate >= DateTime.UtcNow);
+                    filteredSortedJobs = filteredSortedJobs.Concat(sortedJobs.Where(x => x.ExpiryDate < DateTime.UtcNow));
                 }
 
-                if (!showUnexpired)
+                if (showUnexpired)
                 {
-                    sortedJobs = sortedJobs.Where(x => x.ExpiryDate < DateTime.UtcNow);
+                    filteredSortedJobs = filteredSortedJobs.Concat(sortedJobs.Where(x => x.ExpiryDate >= DateTime.UtcNow));
                 }
 
                 //TODO Draft not implemented yet
@@ -198,18 +201,23 @@ namespace Talent.Services.Listing.Controllers
 
                 //}
 
+                // Remove duplicates based on Job Id (or another unique identifier) using DistinctBy
+                filteredSortedJobs = filteredSortedJobs
+                    .DistinctBy(x => x.Id)  // Eliminate duplicates based on Job Id
+                    .ToList();  // Convert back to list if needed
+
                 if (sortbyDate == "desc")
                 {
-                    var returnJobs = sortedJobs.OrderByDescending(x => x.CreatedOn).Skip((activePage - 1) * limit).Take(limit)
+                    var returnJobs = filteredSortedJobs.OrderByDescending(x => x.CreatedOn).Skip((activePage - 1) * limit).Take(limit)
                         .Select(x => new { x.Id, x.Title, x.Summary, x.JobDetails.Location, x.ExpiryDate, x.Status, noOfSuggestions = x.TalentSuggestions != null && x.TalentSuggestions.Count != 0 ? x.TalentSuggestions.Count : 0 });
-                    return Json(new { Success = true, MyJobs = returnJobs, TotalCount = sortedJobs.Count() });
+                    return Json(new { Success = true, MyJobs = returnJobs, TotalCount = filteredSortedJobs.Count() });
                 }
 
                 else
                 {
-                    var returnJobs = sortedJobs.OrderBy(x => x.CreatedOn).Skip((activePage - 1) * limit).Take(limit)
+                    var returnJobs = filteredSortedJobs.OrderBy(x => x.CreatedOn).Skip((activePage - 1) * limit).Take(limit)
                         .Select(x => new { x.Id, x.Title, x.Summary, x.JobDetails.Location, x.ExpiryDate, x.Status, noOfSuggestions = x.TalentSuggestions != null && x.TalentSuggestions.Count != 0 ? x.TalentSuggestions.Count : 0 });
-                    return Json(new { Success = true, MyJobs = returnJobs, TotalCount = sortedJobs.Count() });
+                    return Json(new { Success = true, MyJobs = returnJobs, TotalCount = filteredSortedJobs .Count() });
                 }                
             }
             catch

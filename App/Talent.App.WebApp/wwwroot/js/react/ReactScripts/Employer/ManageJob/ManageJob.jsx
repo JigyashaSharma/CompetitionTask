@@ -34,7 +34,7 @@ export default class ManageJob extends React.Component {
                 showExpired: true,
                 showUnexpired: true
             },
-            totalPages: 1,
+            totalJobs: 1,
             activeIndex: -1,
             copied: false
         }
@@ -116,7 +116,7 @@ export default class ManageJob extends React.Component {
                         res.myJobs[index].expiryDate = moment(job.expiryDate);
                     });
                     this.setState({ loadJobs: res.myJobs });
-                    this.setState({ totalPages: res.totalCount });
+                    this.setState({ totalJobs: res.totalCount });
                 } else {
                     TalentUtil.notification.show(res.message, "error", null, null)
                 }
@@ -152,9 +152,12 @@ export default class ManageJob extends React.Component {
     };
 
     handleFilterChange(newFilter) {
+        //also set the activePage: default: 1
         this.setState({
-            filter: newFilter
+            filter: newFilter,
+            activePage: 1
         })
+        
     }
 
     handleSortChange(sortValue) {
@@ -207,26 +210,6 @@ export default class ManageJob extends React.Component {
         this.handleActivePageChange(activePage);
     };
 
-    // Function to copy job data to clipboard
-    handleCopyJobData = (jobId) => {
-        // Get job data based on jobId
-        const job = this.state.loadJobs.find(job => job.id === jobId);
-        var jobContent = '';
-        if (job) {
-             jobContent = `Job Title: ${job.title}\nLocation: ${job.location.city}, ${job.location.country}\nSummary: ${job.summary}`;
-        }
-
-        // Use Clipboard API to copy the job data to clipboard
-        navigator.clipboard.writeText(jobContent)
-            .then(() => {
-                // Show copied message
-                TalentUtil.notification.show("Job Copied to Clipboard", "success", null, null)
-            })
-            .catch((err) => {
-                TalentUtil.notification.show("Error copying to clipboard:", "error", null, null);
-            });
-    };
-
     render() {
         if (this.state.loaderData.isLoading) {
             return <Loading />;
@@ -250,7 +233,7 @@ export default class ManageJob extends React.Component {
                                 paginatedJobs={this.state.loadJobs}
                                 activePage={this.state.activePage}
                                 jobsPerPage={this.state.jobsPerPage}
-                                totalJobs={this.state.totalPages}
+                                totalJobs={this.state.totalJobs}
                                 handleActivePageChange={this.handleActivePageChange}
                                 handleClosejob={this.handleClosejob}
                                 handleCopyJobData={this.handleCopyJobData}
@@ -264,7 +247,7 @@ export default class ManageJob extends React.Component {
                                         <Pagination
                                         ellipsisItem={null}
                                         activePage={this.state.activePage}
-                                        totalPages={Math.ceil(this.state.totalPages / this.state.jobsPerPage)}
+                                        totalPages={Math.ceil(this.state.totalJobs / this.state.jobsPerPage)}
                                         onPageChange={this.handlePaginationChange}
                                         />
                                 </div>

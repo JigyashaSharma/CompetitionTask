@@ -104,6 +104,16 @@ class CreateJob extends React.Component {
         if (param != "" || copyJobParam != "") {
             var link = param != "" ? 'http://localhost:51689/listing/listing/GetJobByToEdit?id=' + param
                 : 'http://localhost:51689/listing/listing/GetJobForCopy?id=' + copyJobParam;
+            if (param != '') {
+                this.setState({
+                    heading: "Edit Job"
+                });
+            } else {
+                this.setState({
+                    heading: "Copy Job"
+                });
+            }
+
             var cookies = Cookies.get('talentAuthToken');
             $.ajax({
                 url: link,
