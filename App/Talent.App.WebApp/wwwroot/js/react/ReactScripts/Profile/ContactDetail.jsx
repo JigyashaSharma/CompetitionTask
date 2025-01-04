@@ -48,14 +48,34 @@ export class IndividualDetailSection extends Component {
         this.setState({
             newContact: data
         })
+        let fieldName;
+        switch (event.target.name) {
+            case 'firstName':
+                fieldName = 'firstName';
+                break;
+            case 'lastName':
+                fieldName = 'lastName';
+                break;
+            case 'email':
+                fieldName = 'primaryEmail';
+                break;
+            case 'phone':
+                fieldName = 'primaryPhone'
+                break;
+            default:
+                break;
+        }
+        this.props.validateFunc(fieldName, event.target.value);
     }
 
     saveContact() {
         console.log(this.props.componentId)
         console.log(this.state.newContact)
-        const data = Object.assign({}, this.state.newContact)
-        this.props.controlFunc(this.props.componentId, data)
-        this.closeEdit()
+        if (this.props.formValid) {
+            const data = Object.assign({}, this.state.newContact)
+            this.props.controlFunc(this.props.componentId, data)
+            this.closeEdit()
+        }
     }
 
     render() {
@@ -76,6 +96,7 @@ export class IndividualDetailSection extends Component {
                     maxLength={80}
                     placeholder="Enter your first name"
                     errorMessage="Please enter a valid first name"
+                    isError={this.props.formErrors.firstName != '' ? true: false }
                 />
                 <ChildSingleInput
                     inputType="text"
@@ -86,6 +107,7 @@ export class IndividualDetailSection extends Component {
                     maxLength={80}
                     placeholder="Enter your last name"
                     errorMessage="Please enter a valid last name"
+                    isError={this.props.formErrors.lastName != '' ? true : false}
                 />
                 <ChildSingleInput
                     inputType="text"
@@ -96,6 +118,7 @@ export class IndividualDetailSection extends Component {
                     maxLength={80}
                     placeholder="Enter an email"
                     errorMessage="Please enter a valid email"
+                    isError={this.props.formErrors.primaryEmail != '' ? true : false}
                 />
 
                 <ChildSingleInput
@@ -107,6 +130,7 @@ export class IndividualDetailSection extends Component {
                     maxLength={12}
                     placeholder="Enter a phone number"
                     errorMessage="Please enter a valid phone number"
+                    isError={this.props.formErrors.primaryPhone != '' ? true : false}
                 />
 
                 <button type="button" className="ui teal button" onClick={this.saveContact}>Save</button>
@@ -183,13 +207,32 @@ export class CompanyDetailSection extends Component {
         data[event.target.name] = event.target.value
         this.setState({
             newContact: data
-        })
+        });
+
+        let fieldName;
+        switch (event.target.name) {
+            case 'name':
+                fieldName = 'companyName';
+                break;
+            case 'email':
+                fieldName = 'companyEmail';
+                break;
+            case 'phone':
+                fieldName = 'companyPhone';
+                break;
+            default:
+                break;
+        }
+        this.props.validateFunc(fieldName, event.target.value);
+    
     }
 
     saveContact() {
         const data = Object.assign({}, this.state.newContact)
-        this.props.controlFunc(this.props.componentId, data)
-        this.closeEdit()
+        if (this.props.formValid) {
+            this.props.controlFunc(this.props.componentId, data)
+            this.closeEdit()
+        }
     }
 
     render() {
@@ -213,8 +256,9 @@ export class CompanyDetailSection extends Component {
                     value={this.state.newContact.name}
                     controlFunc={this.handleChange}
                     maxLength={80}
-                    placeholder="Enter your last name"
+                    placeholder="Enter name"
                     errorMessage="Please enter a valid name"
+                    isError={this.props.formErrors.companyName != '' ? true : false}
                 />
                 <ChildSingleInput
                     inputType="text"
@@ -225,6 +269,7 @@ export class CompanyDetailSection extends Component {
                     maxLength={80}
                     placeholder="Enter an email"
                     errorMessage="Please enter a valid email"
+                    isError={this.props.formErrors.companyEmail != '' ? true : false}
                 />
 
                 <ChildSingleInput
@@ -236,6 +281,7 @@ export class CompanyDetailSection extends Component {
                     maxLength={12}
                     placeholder="Enter a phone number"
                     errorMessage="Please enter a valid phone number"
+                    isError={this.props.formErrors.companyPhone != '' ? true : false}
                 />
                 Location:
                 <Location location={location} handleChange={this.handleChange} />

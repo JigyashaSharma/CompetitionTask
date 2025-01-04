@@ -120,14 +120,22 @@ export default class ManageJob extends React.Component {
                 } else {
                     TalentUtil.notification.show(res.message, "error", null, null)
                 }
-            }.bind(this)
-        })
+                this.setState({
+                    loaderData: {
+                        ...this.state.loaderData,
+                        isLoading: false
+                    }
+                })
+            }.bind(this),
+            error: (xhr, status, error) => {
 
-
-        this.setState({
-            loaderData: {
-                ...this.state.loaderData,
-                isLoading: false
+                // Update state to hide the loader even on error
+                this.setState({
+                    loaderData: {
+                        ...this.state.loaderData,
+                        isLoading: false
+                    }
+                });
             }
         })
     }

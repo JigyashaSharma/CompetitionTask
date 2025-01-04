@@ -18,7 +18,7 @@ export default class EmployeeProfile extends React.Component {
             employerData: {
                 skills: []
             },
-            formErrors: { name: '', email: '' },
+            formErrors: { firstName: '', lastName: '', primaryPhone: '', primaryEmail: '', companyName: '', companyEmail: '', companyPhone: ''},
             nameValid: false,
             emailValid: false,
             formValid: true,
@@ -116,27 +116,54 @@ export default class EmployeeProfile extends React.Component {
     validateField(fieldName, value) {
 
         let fieldValidationErrors = this.state.formErrors;
-        let emailValid = this.state.emailValid;
-        let nameValid = this.state.nameValid;
+        let valid;
+        //let emailValid = this.state.emailValid;
+        //let nameValid = this.state.nameValid;
         var formValid = this.state.formValid;
         switch (fieldName) {
-            case 'email':
-                emailValid = value.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i);
-                fieldValidationErrors.email = emailValid ? '' : ' is invalid';
-                formValid = emailValid != null;
+            case 'primaryEmail':
+                valid = value.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i);
+                fieldValidationErrors.primaryEmail = valid ? '' : ' is invalid';
+                formValid = valid != null;
                 break;
-            case 'name':
-                nameValid = value.match('\w');
-                fieldValidationErrors.nameValid = nameValid ? '' : ' is invalid';
-                formValid = nameValid;
+            case 'firstName':
+                valid = value.match(/^\w+$/);
+                fieldValidationErrors.firstName = valid ? '' : ' is invalid';
+                formValid = valid != null;
+                break;
+            case 'lastName':
+                valid = value.match(/^\w+$/);
+                fieldValidationErrors.lastName = valid ? '' : ' is invalid';
+                formValid = valid != null;
+                break;
+            case 'primaryPhone':
+                valid = value.match(/^\d+$/);
+                //valid = /^\d+$/.test(value);
+                fieldValidationErrors.primaryPhone = valid ? '' : ' is invalid';
+                formValid = valid != null;
+                break;
+            case 'companyName':
+                valid = value.match(/^\w+$/);
+                fieldValidationErrors.companyName = valid ? '' : ' is invalid';
+                formValid = valid != null;
+                break;
+            case 'companyEmail':
+                valid = value.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i);
+                fieldValidationErrors.companyEmail = valid ? '' : ' is invalid';
+                formValid = valid != null;
+                break;
+            case 'companyPhone':
+                valid = value.match(/^\d+$/);
+                fieldValidationErrors.companyPhone = valid ? '' : ' is invalid';
+                formValid = valid != null;
                 break;
             default:
                 break;
         }
         this.setState({
             formErrors: fieldValidationErrors,
-            emailValid: emailValid,
-            nameValid: nameValid,
+            //emailValid: emailValid,
+            //nameValid: nameValid,
             formValid: formValid
         }, this.validateForm);
     }
@@ -193,6 +220,9 @@ export default class EmployeeProfile extends React.Component {
                                                 controlFunc={this.updateForComponentId}
                                                 details={this.state.employerData.primaryContact}
                                                 componentId='primaryContact'
+                                                validateFunc={this.validateField}
+                                                formValid={this.state.formValid}
+                                                formErrors={this.state.formErrors}
                                             />
                                         </FormItemWrapper>
 
@@ -204,6 +234,9 @@ export default class EmployeeProfile extends React.Component {
                                                 controlFunc={this.updateForComponentId}
                                                 details={this.state.employerData.companyContact}
                                                 componentId='companyContact'
+                                                validateFunc={this.validateField}
+                                                formValid={this.state.formValid}
+                                                formErrors={this.state.formErrors}
                                             />
                                         </FormItemWrapper>
                                      
