@@ -6,22 +6,18 @@ export default class CloseJobConfirmation extends React.Component {
     }
 
     handleCloseCancel = () => {
-        console.log("handleCloseCancel CloseJobConfirmation");
         this.props.setCloseConfirm(false);
         this.props.setCloseJobId(null);
     };
 
     handleCloseConfirm = () => {
-         console.log("handleCloseConfirm CloseJobConfirmation");
         this.props.handleClosejob(this.props.closeJobId);
         this.props.setCloseJobId(null);
         this.props.setCloseConfirm(false);
     };
 
     render() {
-        { console.log("close modal", this.props.open) }
         const openValue = this.props.open;
-        //const openValue = true;
         return (
             <div>
                 <Confirm
@@ -31,7 +27,6 @@ export default class CloseJobConfirmation extends React.Component {
                     onCancel={this.handleCloseCancel}
                     onConfirm={this.handleCloseConfirm}
                 />
-                {console.log("/outside Modal")}
             </div>
         );
     };

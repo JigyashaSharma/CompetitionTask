@@ -45,9 +45,11 @@ export default class Register extends React.Component {
             userRole: this.state.userRole,
             terms: this.state.terms
         };
+        const apiUrl = process.env.REACT_APP_INDENTITY_API_URL;
+        const link = `${apiUrl}/authentication/authentication/signup`;
 
         $.ajax({
-            url: 'http://localhost:60998/authentication/authentication/signup',
+            url: link,
             type: 'POST',
             data: JSON.stringify(registerModel),
             contentType: 'application/json',

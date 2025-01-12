@@ -6,12 +6,21 @@ const JobEditNavigator = ( props ) => {
     const navigate = useNavigate(); // Get navigate function using useNavigate hook
 
     const handleEditClick = (jobId) => {
-        // Navigate to createJob page with jobId as a URL parameter
-        navigate(`/EditJob/${jobId}`);
+        if (jobId) {
+            // Navigate to createJob page with jobId as a URL parameter
+            navigate(`/EditJob/${jobId}`);
+        } else {
+            TalentUtil.notification.show("Edit Job Id Missing", "error", null, null);
+        }
     };
 
     const handleCopyClick = (jobId) => {
-        navigate(`/PostJob/${jobId}`);
+        if (jobId) {
+            navigate(`/PostJob/${jobId}`);
+        } else {
+            TalentUtil.notification.show("Copy Job Id Missing", "error", null, null);
+        }
+        
     };
 
     return <DisplayJobs

@@ -7,6 +7,7 @@ import { countryOptions } from '../common.js'
 import { JobCategories } from './JobCategories.jsx';
 import { Salary } from './Salary.jsx';
 import { Location } from './Location.jsx';
+import { ErrorMessage } from './ErrorMessage.jsx';
 
 export class JobDetailsCard extends React.Component {
     constructor(props) {
@@ -84,7 +85,8 @@ export class JobDetailsCard extends React.Component {
                 <div className="content">
                     <div className="header">
                         Job Details
-                        {hasMissingJobDetails ? <div className="ui basic red pointing prompt label transition visible">{"Please provide the required fields in JobDetails"}</div> : null}
+                        <ErrorMessage isError={hasMissingJobDetails} errorMessage="Please provide the required fields in JobDetails" />
+                        {/*hasMissingJobDetails ? <div className="ui basic red pointing prompt label transition visible">{"Please provide the required fields in JobDetails"}</div> : null*/}
                      </div>
                 </div>
 

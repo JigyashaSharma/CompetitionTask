@@ -14,6 +14,8 @@ import { JobSummary } from './JobSummary.jsx';
 import { BodyWrapper, loaderData } from '../../Layout/BodyWrapper.jsx';
 import { useParams } from 'react-router-dom';
 import Loading from '../../Layout/Loading.jsx';
+import { ErrorMessage } from './ErrorMessage.jsx';
+import { Navigate } from 'react-router-dom'; // For redirection
 
 
 //Created it for validation
@@ -65,6 +67,7 @@ class CreateJob extends React.Component {
             loaderData: loaderData,
             formErrors: {},
             heading: '',
+            backendError:'',
         }
         
         this.updateStateData = this.updateStateData.bind(this);
@@ -101,9 +104,11 @@ class CreateJob extends React.Component {
         var param = this.props.match.params.id ? this.props.match.params.id : "";//workaround till we get Redux in to keep the page from breaking
         var copyJobParam = this.props.match.params.copyId ? this.props.match.params.copyId : "";
 
+        const apiUrl = process.env.REACT_APP_LISTING_API_URL;
+
         if (param != "" || copyJobParam != "") {
-            var link = param != "" ? 'http://localhost:51689/listing/listing/GetJobByToEdit?id=' + param
-                : 'http://localhost:51689/listing/listing/GetJobForCopy?id=' + copyJobParam;
+            var link = param != "" ? `${apiUrl}/listing/listing/GetJobByToEdit?id=` + param
+                : `${apiUrl}/listing/listing/GetJobForCopy?id=`+ copyJobParam;
             if (param != '') {
                 this.setState({
                     heading: "Edit Job"
@@ -133,6 +138,10 @@ class CreateJob extends React.Component {
                                 ? moment(res.jobData.expiryDate) : moment().add(14,'days') : null;
                         this.setState({ jobData: res.jobData })
                     } else {
+                        this.setState({
+                            backendError: res.message
+                        });
+
                         TalentUtil.notification.show(res.message, "error", null, null)
                     }
                 }.bind(this)
@@ -191,8 +200,10 @@ class CreateJob extends React.Component {
         }
         //jobData.jobDetails.startDate = jobData.jobDetails.startDate.toDate();
         var cookies = Cookies.get('talentAuthToken');   
+        const apiUrl = process.env.REACT_APP_LISTING_API_URL;
+        const link = `${apiUrl}/listing/listing/createUpdateJob`;
         $.ajax({
-            url: 'http://localhost:51689/listing/listing/createUpdateJob',
+            url: link,
             headers: {
                 'Authorization': 'Bearer ' + cookies,
                 'Content-Type': 'application/json'
@@ -225,6 +236,9 @@ class CreateJob extends React.Component {
     render() {
         if (this.state.loaderData.isLoading) {
             return <Loading />;
+        }
+        if (this.state.backendError) {
+            return <Navigate to="/ManageJobs" />;
         }
 
         return (

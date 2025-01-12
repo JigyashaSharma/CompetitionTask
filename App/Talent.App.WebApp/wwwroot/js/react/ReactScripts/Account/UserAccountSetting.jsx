@@ -50,9 +50,11 @@ export default class UserAccountSetting extends React.Component {
     };
     save(e, field) {
         const cookies = Cookies.get('talentAuthToken');
-        if (field == "name") {            
+        if (field == "name") {       
+            const apiUrl = process.env.REACT_APP_INDENTITY_API_URL;
+            let link = `${apiUrl}/authentication/authentication/changeUserName?userName=`;
             $.ajax({
-                url: 'http://localhost:60998/authentication/authentication/changeUserName?userName=' + this.state.userName,
+                url: link + this.state.userName,
                 type: 'POST',
                 headers: {
                     'Authorization': 'Bearer ' + cookies,
@@ -73,8 +75,12 @@ export default class UserAccountSetting extends React.Component {
         }
         if (field == "password") {
             let data = this.state.password;
+
+            const apiUrl = process.env.REACT_APP_INDENTITY_API_URL;
+            let link = `${apiUrl}/authentication/authentication/changePassword`;
+
             $.ajax({
-                url: 'http://localhost:60998/authentication/authentication/changePassword',
+                url: link,
                 type: "POST",
                 data: JSON.stringify(data),
                 headers: {
@@ -103,8 +109,10 @@ export default class UserAccountSetting extends React.Component {
             });
         }
         if (field == "deactivate") {
+            const apiUrl = process.env.REACT_APP_INDENTITY_API_URL;
+            let link = `${apiUrl}/authentication/authentication/deactivateAccount`;
             $.ajax({
-                url: 'http://localhost:60998/authentication/authentication/deactivateAccount',
+                url: link,
                 type: "POST",
                 headers: {
                     'Authorization': 'Bearer ' + cookies,
@@ -124,8 +132,11 @@ export default class UserAccountSetting extends React.Component {
     }
     getUserRole() {
         const cookies = Cookies.get('talentAuthToken');
+        const apiUrl = process.env.REACT_APP_INDENTITY_API_URL;
+        let link = `${apiUrl}/authentication/authentication/getAccountSettingInfo`;
+
         $.ajax({
-            url: 'http://localhost:60998/authentication/authentication/getAccountSettingInfo',
+            url: link,
             type: 'GET',
             headers: {
                 'Authorization': 'Bearer ' + cookies,

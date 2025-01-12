@@ -1,7 +1,7 @@
 import * as Cookies from 'js-cookie';
 import React from 'react';
 import { Icon, Card, Button, Pagination, Container, Divider, Label } from 'semantic-ui-react';
-import "./JobStyle.css";
+import styles from "./JobStyle.module.css";
 import moment from 'moment';
 import CloseJobConfirmation from './CloseJobConfirmation.jsx';
 
@@ -58,26 +58,31 @@ export default class DisplayJobs extends React.Component {
 
     render() {
         const pagedJobs = this.props.paginatedJobs;
+
+        if (!Array.isArray(pagedJobs)) {
+            return;
+        }
+        console.log("styles check: ",styles);  
         return (
             <Container>
                 <Card.Group>
                     {pagedJobs.map((job) => (
                         <Card key={job.id} style={{ marginRight: '10px' }} >
-                                    <Card.Content className="eight wide computer eight wide tablet sixteen wide mobile column">
-                                        <Card.Header>{job.title}</Card.Header>
-                                        {/* ... your card content ... */}
-                                        <a class="ui black right ribbon label">
-                                            <Icon name='user' size='small' />
-                                            {job.noOfSuggestions}
-                                        </a>
-                                        <Card.Meta>{job.location.city}, &nbsp; {job.location.country}</Card.Meta>
-                                        <Card.Description>{job.summary}</Card.Description>
-                                    </Card.Content>
-                            
+                            <Card.Content className="eight wide computer eight wide tablet sixteen wide mobile column">
+                                <Card.Header>{job.title}</Card.Header>
+                                {/* ... your card content ... */}
+                                <a class="ui black right ribbon label">
+                                    <Icon name='user' size='small' />
+                                    {job.noOfSuggestions}
+                                </a>
+                                <Card.Meta>{job.location.city}, &nbsp; {job.location.country}</Card.Meta>
+                                <Card.Description>{job.summary}</Card.Description>
+                            </Card.Content>
+
                             {/* Line at the bottom of the card */}
-                            <div className="ui divider"></div> 
+                            <div className="ui divider"></div>
                             <div className="ui grid">
-                                <div className="three wide column" style={{ marginLeft: '5px', marginBottom: '10px'} }>
+                                <div className="three wide column" style={{ marginLeft: '5px', marginBottom: '10px' }}>
                                     {/* "Expired" label on the left side */}
                                     {this.checkExpiration(job.expiryDate) && (
                                         <Label color="red" size="tiny">

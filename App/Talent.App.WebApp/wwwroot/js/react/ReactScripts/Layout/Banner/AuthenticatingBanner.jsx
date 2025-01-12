@@ -59,8 +59,10 @@ export default class AuthenticatingBanner extends React.Component {
 
     isUserAuthenticated() {
         var cookies = Cookies.get('talentAuthToken')
+        const apiUrl = process.env.REACT_APP_PROFILE_API_URL;
+        const link = `${apiUrl}/profile/profile/isUserAuthenticated`;
         $.ajax({
-            url: 'http://localhost:60290/profile/profile/isUserAuthenticated',
+            url: link,
             headers: {
                 'Authorization': 'Bearer ' + cookies,
                 'Content-Type': 'application/json'

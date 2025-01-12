@@ -16,7 +16,7 @@ export default class TalentDetail extends React.Component {
     //    this.loadData()
     //}
 
-    //loadData()  url: 'http://localhost:60290/profile/profile/getTalentProfile',
+    //loadData()  url: 'https://talentservicesprofile20241231134001.azurewebsites.net/profile/profile/getTalentProfile',
    
     render() {
         

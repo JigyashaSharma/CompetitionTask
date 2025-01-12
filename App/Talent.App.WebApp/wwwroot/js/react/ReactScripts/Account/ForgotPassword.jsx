@@ -30,9 +30,11 @@ export default class ForgotPassword extends React.Component {
     forgotPassword() {
         this.setState({ isLoading: true });
         var forgotPasswordModel = { email: this.state.email };
+        const apiUrl = process.env.REACT_APP_INDENTITY_API_URL;
+        const link = `${apiUrl}/authentication/authentication/forgetpassword`;
 
         $.ajax({
-            url: 'http://localhost:60998/authentication/authentication/forgetpassword',
+            url: link,
             type: 'POST',
             data: JSON.stringify(forgotPasswordModel),
             contentType: 'application/json',
