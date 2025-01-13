@@ -15,13 +15,6 @@ export default class DisplayJobs extends React.Component {
         }
     }
 
-    customTinyButtonStyle = {
-        padding: '0.5rem 0.6rem',
-        fontSize: '10px',
-        lineHeight: '1',
-        margin: '0',
-    };
-
     checkExpiration = (date) => {
         if (date.isBefore(moment(), 'day')) {
             return 'Expired'; // Display expired text
@@ -67,7 +60,7 @@ export default class DisplayJobs extends React.Component {
             <Container>
                 <Card.Group>
                     {pagedJobs.map((job) => (
-                        <Card key={job.id} style={{ marginRight: '10px' }} >
+                        <Card key={job.id} className={styles.cardMargin} >
                             <Card.Content className="eight wide computer eight wide tablet sixteen wide mobile column">
                                 <Card.Header>{job.title}</Card.Header>
                                 {/* ... your card content ... */}
@@ -82,7 +75,7 @@ export default class DisplayJobs extends React.Component {
                             {/* Line at the bottom of the card */}
                             <div className="ui divider"></div>
                             <div className="ui grid">
-                                <div className="three wide column" style={{ marginLeft: '5px', marginBottom: '10px' }}>
+                                <div className={`three wide column ${styles.expireJobMargin}`}>
                                     {/* "Expired" label on the left side */}
                                     {this.checkExpiration(job.expiryDate) && (
                                         <Label color="red" size="tiny">
@@ -93,20 +86,17 @@ export default class DisplayJobs extends React.Component {
 
                                 <div className="twelve wide right aligned column">
                                     {/* Buttons on the right side */}
-                                    <Button.Group divided style={{ marginBottom: '10px' }}>
-                                        {!job.status && (<Button className="basic outline blue"
-                                            style={{ ...this.customTinyButtonStyle }}
+                                    <Button.Group divided className={styles.buttonGroup}>
+                                        {!job.status && (<Button className={`basic outline blue ${styles.customTinyButtonStyle}`}
                                             onClick={() => this.handleClose(job.id)} >
                                             <Icon name="close" /> Close
                                         </Button>
                                         )}
-                                        <Button className="basic outline blue"
-                                            style={{ ...this.customTinyButtonStyle }}
+                                        <Button className={`basic outline blue ${styles.customTinyButtonStyle}`}
                                             onClick={() => this.handleEdit(job.id)} >
                                             <Icon name="edit" /> Edit
                                         </Button>
-                                        <Button className="basic outline blue"
-                                            style={{ ...this.customTinyButtonStyle, marginRight: '2px' }}
+                                        <Button className={`basic outline blue ${styles.customTinyButtonStyle} ${styles.buttonRightMargin}`}
                                             onClick={() => this.handleCopy(job.id)} >
                                             <Icon name="copy" />  Copy
                                         </Button>
