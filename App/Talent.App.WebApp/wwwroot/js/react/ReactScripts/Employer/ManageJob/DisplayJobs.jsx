@@ -55,7 +55,6 @@ export default class DisplayJobs extends React.Component {
         if (!Array.isArray(pagedJobs)) {
             return;
         }
-        console.log("styles check: ",styles);  
         return (
             <Container>
                 <Card.Group>
