@@ -1,11 +1,16 @@
 ﻿import React from 'react';
 import ReactDOM from 'react-dom/client';
 import Cookies from 'js-cookie';
+import moment from 'moment';
 import LoggedInBanner from '../../Layout/Banner/LoggedInBanner.jsx';
 import { LoggedInNavigation } from '../../Layout/LoggedInNavigation.jsx';
 import { JobSummaryCard } from './JobSummaryCard.jsx';
 import { BodyWrapper, loaderData } from '../../Layout/BodyWrapper.jsx';
-import { Pagination, Icon, Dropdown, Checkbox, Accordion, Form, Segment } from 'semantic-ui-react';
+import { Pagination, Icon, Dropdown, Checkbox, Accordion, AccordionTitle, Form, Segment } from 'semantic-ui-react';
+import Loading from '../../Layout/Loading.jsx';
+import '../../../../../css/Dropdown.module.css';
+import ManageJobsFilter from './ManageJobsFilter.jsx';
+import JobEditNavigator from './JobEditNavigator.jsx';
 
 export default class ManageJob extends React.Component {
     constructor(props) {
@@ -18,6 +23,7 @@ export default class ManageJob extends React.Component {
             loadJobs: [],
             loaderData: loader,
             activePage: 1,
+            jobsPerPage: 6,
             sortBy: {
                 date: "desc"
             },
@@ -28,39 +34,114 @@ export default class ManageJob extends React.Component {
                 showExpired: true,
                 showUnexpired: true
             },
-            totalPages: 1,
-            activeIndex: ""
+            totalJobs: 1,
+            activeIndex: -1,
+            copied: false
         }
         this.loadData = this.loadData.bind(this);
         this.init = this.init.bind(this);
-        this.loadNewData = this.loadNewData.bind(this);
+        this.handleFilterChange = this.handleFilterChange.bind(this);
+        this.handleAccordionClick = this.handleAccordionClick.bind(this);
+        this.handleSortChange = this.handleSortChange.bind(this);
+        //this.loadNewData = this.loadNewData.bind(this);
         //your functions go here
     };
 
     init() {
         let loaderData = TalentUtil.deepCopy(this.state.loaderData)
-        loaderData.isLoading = false;
-        this.setState({ loaderData });//comment this
+        this.setState({
+            loaderData: {
+                ...this.state.loaderData,
+                isLoading: true
+            }
+        });
+        //this.setState({ loaderData });//comment this
 
         //set loaderData.isLoading to false after getting data
-        //this.loadData(() =>
-        //    this.setState({ loaderData })
-        //)
+        this.loadData(() =>
+            this.setState({ loaderData })
+        )
         
         //console.log(this.state.loaderData)
     }
 
     componentDidMount() {
         this.init();
+        //this.loadNewData();
     };
 
+    componentDidUpdate(prevPops, prevState) {
+        if (JSON.stringify(prevState.filter) !== JSON.stringify(this.state.filter) ||
+            prevState.sortBy.date !== this.state.sortBy.date ||
+            prevState.activePage !== this.state.activePage) {
+            this.loadData();
+        }
+    };
     loadData(callback) {
-        var link = 'http://localhost:51689/listing/listing/getSortedEmployerJobs';
+        const apiUrl = process.env.REACT_APP_LISTING_API_URL;
+        const link = `${apiUrl}/listing/listing/getSortedEmployerJobs`;
         var cookies = Cookies.get('talentAuthToken');
-       // your ajax call and other logic goes here
+
+        this.setState({
+            loaderData: {
+                ...this.state.loaderData,
+                isLoading: true
+            }
+        })
+        const params = {
+            activePage: this.state.activePage,
+            sortbyDate: this.state.sortBy.date,
+            showActive: this.state.filter.showActive,
+            showClosed: this.state.filter.showClosed,
+            showDraft: this.state.filter.showDraft,
+            showExpired: this.state.filter.showExpired,
+            showUnexpired: this.state.filter.showUnexpired,
+            limit: this.state.jobsPerPage
+        };
+
+        // your ajax call and other logic goes here
+        $.ajax({
+            url: link,
+            headers: {
+                'Authorization': 'Bearer ' + cookies,
+                'Content-Type': 'application/json'
+            },
+            type: "GET",
+            contentType: "application/json",
+            dataType: "json",
+            data: params,
+            success: function (res) {
+                if (res.success == true) {
+
+                    res.myJobs.forEach((job, index) => {
+                        res.myJobs[index].expiryDate = moment(job.expiryDate);
+                    });
+                    this.setState({ loadJobs: res.myJobs });
+                    this.setState({ totalJobs: res.totalCount });
+                } else {
+                    TalentUtil.notification.show(res.message, "error", null, null)
+                }
+                this.setState({
+                    loaderData: {
+                        ...this.state.loaderData,
+                        isLoading: false
+                    }
+                })
+            }.bind(this),
+            error: (xhr, status, error) => {
+
+                // Update state to hide the loader even on error
+                this.setState({
+                    loaderData: {
+                        ...this.state.loaderData,
+                        isLoading: false
+                    }
+                });
+            }
+        })
     }
 
-    loadNewData(data) {
+    /*loadNewData(data) {
         var loader = this.state.loaderData;
         loader.isLoading = true;
         data[loaderData] = loader;
@@ -72,12 +153,119 @@ export default class ManageJob extends React.Component {
                 })
             })
         });
+    }*/
+
+    // Toggle Accordion section open/close
+    handleAccordionClick (newIndex){
+        this.setState({ activeIndex: newIndex });
+    };
+
+    handleFilterChange(newFilter) {
+        //also set the activePage: default: 1
+        this.setState({
+            filter: newFilter,
+            activePage: 1
+        })
+        
     }
 
+    handleSortChange(sortValue) {
+        const sortTemp = { date: sortValue }
+        this.setState({ sortBy: sortTemp });
+    }
+
+    handleActivePageChange = (activePageValue) => {
+        this.setState({
+            activePage: activePageValue
+        })
+    };
+
+    handleClosejob = (jobId) => {
+
+        const apiUrl = process.env.REACT_APP_LISTING_API_URL;
+        const link = `${apiUrl}/listing/listing/CloseJob`;
+
+        var cookies = Cookies.get('talentAuthToken');
+        const params = jobId;
+        $.ajax({
+            url: link,
+            headers: {
+                'Authorization': 'Bearer ' + cookies,
+                'Content-Type': 'application/json'
+            },
+            type: "post",
+            contentType: "application/json",
+            dataType: "json",
+            data: JSON.stringify(params),
+            success: function (res) {
+                if (res.success == true) {
+
+                    const updatedJobs = this.state.loadJobs.map(job => {
+                        if (job.id === jobId) {
+                            return { ...job, status: true }
+                        }
+                        return job;
+                    });
+
+                    this.setState({
+                        loadJobs: updatedJobs
+                    })
+                } else {
+                    TalentUtil.notification.show(res.message, "error", null, null)
+                }
+            }.bind(this)
+        })
+    };
+
+    handlePaginationChange = (e, { activePage }) => {
+        this.handleActivePageChange(activePage);
+    };
+
     render() {
+        if (this.state.loaderData.isLoading) {
+            return <Loading />;
+        }
+
         return (
             <BodyWrapper reload={this.init} loaderData={this.state.loaderData}>
-               <div className ="ui container">Your table goes here</div>
+                <div className="ui container">
+                    <section className="page-body">
+                        <div className="ui container">
+                            <h5>List of Jobs</h5>
+                            <ManageJobsFilter
+                                filter={ this.state.filter }
+                                activeIndex={ this.state.activeIndex }
+                                sortBy={ this.state.sortBy }
+                                handleAccordionClick={ this.handleAccordionClick }
+                                handleFilterChange={ this.handleFilterChange }
+                                handleSortChange={this.handleSortChange }
+                            />
+                            {this.state.loadJobs.length > 0 ?( <JobEditNavigator
+                                paginatedJobs={this.state.loadJobs}
+                                activePage={this.state.activePage}
+                                jobsPerPage={this.state.jobsPerPage}
+                                totalJobs={this.state.totalJobs}
+                                handleActivePageChange={this.handleActivePageChange}
+                                handleClosejob={this.handleClosejob}
+                                handleCopyJobData={this.handleCopyJobData}
+                            />) : (
+                                <span>No Jobs Found</span>
+                            )}
+                        </div>
+                        <div className="ui grid" >
+                            <div className="ui centered row" style={{ marginTop: '20px' }}>
+                                <div className="ten wide column">
+                                        <Pagination
+                                        ellipsisItem={null}
+                                        activePage={this.state.activePage}
+                                        totalPages={Math.ceil(this.state.totalJobs / this.state.jobsPerPage)}
+                                        onPageChange={this.handlePaginationChange}
+                                        />
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
             </BodyWrapper>
         )
     }

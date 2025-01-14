@@ -46,7 +46,8 @@ export default class VerifyClient extends React.Component {
         let data = {
             recruiterEmail, clientEmail, resetPasswordToken
         }
-        let url = `http://localhost:60998/authentication/authentication/verifyClientToken?recruiterEmail=${recruiterEmail}&clientEmail=${clientEmail}&resetPasswordToken=${resetPasswordToken}`;
+        const apiUrl = process.env.REACT_APP_INDENTITY_API_URL;
+        let url = `${apiUrl}/authentication/authentication/verifyClientToken?recruiterEmail=${recruiterEmail}&clientEmail=${clientEmail}&resetPasswordToken=${resetPasswordToken}`;
         $.ajax({
             url: url,
             type: 'POST',
@@ -128,8 +129,9 @@ export default class VerifyClient extends React.Component {
 
     savePassword() {
         let { newPassword, recruiterEmail, clientEmail, resetPasswordToken } = this.state;
-        
-        let resetUrl = `http://localhost:60998/authentication/authentication/validateInvitation?recruiterEmail=${recruiterEmail}&clientEmail=${clientEmail}&resetPasswordToken=${resetPasswordToken}`;
+
+        const apiUrl = process.env.REACT_APP_INDENTITY_API_URL;
+        let resetUrl = `${apiUrl}/authentication/authentication/validateInvitation?recruiterEmail=${recruiterEmail}&clientEmail=${clientEmail}&resetPasswordToken=${resetPasswordToken}`;
 
         $.ajax({
             url: resetUrl,

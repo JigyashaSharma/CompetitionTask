@@ -1,5 +1,6 @@
 ﻿import React from 'react';
 import CkEditor from "react-ckeditor-component";
+import { ErrorMessage } from './ErrorMessage.jsx';
 
 
 export class JobDescription extends React.Component {
@@ -36,6 +37,8 @@ export class JobDescription extends React.Component {
                         "change": this.onChange
                     }}
                 />
+                <ErrorMessage isError={this.props.isError} errorMessage={this.props.errorMessage} />
+                {/*this.props.isError ? <div className="ui basic red pointing prompt label transition visible">{this.props.errorMessage}</div> : null*/}
             </section>
         )
     }

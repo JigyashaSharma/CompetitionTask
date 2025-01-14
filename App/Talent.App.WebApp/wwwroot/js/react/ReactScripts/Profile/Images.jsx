@@ -28,8 +28,11 @@ export class Images extends React.Component {
 
         var cookies = Cookies.get('talentAuthToken');
 
+        const apiUrl = process.env.REACT_APP_PROFILE_API_URL;
+        const link = `${apiUrl}/profile/profile/getEmployerProfileImage/?id=`;
+
         $.ajax({
-            url: 'http://localhost:60290/profile/profile/getEmployerProfileImage/?id=' + Id,
+            url: link + Id,
             headers: {
                 'Authorization': 'Bearer ' + cookies,
                 'Content-Type': 'application/json'
@@ -44,8 +47,11 @@ export class Images extends React.Component {
                 let selectedFileArr = [];
 
                 if (res.employerProfile.length > 0) {
+                    const apiUrl = process.env.REACT_APP_PROFILE_API_URL;
+                    const link = `${apiUrl}/profile/profile/getEmployerProfileImages/?Id=`;
+
                     for (var i = 0; i < res.employerProfile.length; i++) {
-                        imageSrcArr.push("http://localhost:60290/profile/profile/getEmployerProfileImages/?Id=" + res.employerProfile[i].fileName);
+                        imageSrcArr.push(link + res.employerProfile[i].fileName);
                         imageIdArr.push(res.employerProfile[i].id);
                         selectedFileArr.push("");
                     }
@@ -135,9 +141,11 @@ export class Images extends React.Component {
         data.append('FileRemoveId', this.state.selectedRemoveFileId);
 
         var cookies = Cookies.get('talentAuthToken');
+        const apiUrl = process.env.REACT_APP_PROFILE_API_URL;
+        const link = `${apiUrl}/profile/profile/addEmployerProfileImages`;
 
         $.ajax({
-            url: 'http://localhost:60290/profile/profile/addEmployerProfileImages',
+            url: link,
             headers: {
                 'Authorization': 'Bearer ' + cookies
             },

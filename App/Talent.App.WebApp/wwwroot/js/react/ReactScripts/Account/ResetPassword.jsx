@@ -42,7 +42,11 @@ export default class ResetPassword extends React.Component {
             Email: email,
             Token: token
         }
-        let url = `http://localhost:60998/authentication/authentication/verifyResetPasswordToken?o=${email}&p=${token}`;
+
+        const apiUrl = process.env.REACT_APP_INDENTITY_API_URL;
+        const link = `${apiUrl}/authentication/authentication/verifyResetPasswordToken?o=${email}&p=${token}`;
+
+        let url = link;
         $.ajax({
             url: url,
             type: 'POST',
@@ -130,7 +134,8 @@ export default class ResetPassword extends React.Component {
         let newPassword = this.state.newPassword;
         let email = this.state.email;
         let token = this.state.token;
-        let resetUrl = `http://localhost:60998/authentication/authentication/resetpassword?o=${email}&p=${token}`;
+        const apiUrl = process.env.REACT_APP_INDENTITY_API_URL;
+        let resetUrl = `${apiUrl}/authentication/authentication/resetpassword?o=${email}&p=${token}`;
 
         $.ajax({
             url: resetUrl,
