@@ -1,6 +1,6 @@
 ## Talent Competition Code Repository
 
-This project I did at as part of MVP Studio internship to understand how ReactJs, C# Web Api, MongoDb is used in Talent Code Architecture for the candidate role.
+This project I did as part of MVP Studio internship to understand how ReactJs, C# Web Api, MongoDb is used in Talent Code Architecture. Tasks below give more details on the feature completed as part of this project.
 
 ## Competition task
 
@@ -9,15 +9,14 @@ This project I did at as part of MVP Studio internship to understand how ReactJs
   * Allow users to edit company contact details by clicking on the edit button
   * Display the user's full name on primary contact details (for read only display)
 
-* Task 2 : Manage Job page
+* Task 2 : Employer Manage Job page
   * Display jobs as a list of cards
-  * Bonus/Optional: Update a job, Close a job
-* Submitting tasks
-  * Please submit tasks the same way you did for Onboarding:
-  * Upload code to your personal GitHub account
-  * Deploy a copy to Azure
-  * Notify your mentor using the industryconnect.io internship portal
-  * 
+  * Update a job, Close a job
+
+## Deployment Details
+https://talentappwebapp20250102164245.azurewebsites.net/
+* Login to the portal with Employer creds.
+* Explore the Employer profile and Manage 
 ## Guides to get started
 
 ### React tutorials/resources
